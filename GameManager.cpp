@@ -3,6 +3,7 @@
 #include "Level.h"
 #include "Player.h"
 #include <SFML/System.hpp> // Include SFML's system header for sleep function
+#include <cmath>
 
 GameManager::GameManager()
 {

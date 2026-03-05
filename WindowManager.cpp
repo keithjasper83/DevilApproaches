@@ -3,6 +3,7 @@
 WindowManager::WindowManager()
 {
     // configure the window defaults
+    titleUpdateInterval = sf::seconds(0.2f);
 }
 
 WindowManager::~WindowManager()
@@ -32,9 +33,13 @@ bool WindowManager::isActive()
 }
 void WindowManager::updateWindowTitle(float fps, sf::Vector2f playerPosition)
 {
-    std::stringstream ss;
-    ss << "My window - FPS: " << fps << " - Player Position: (" << playerPosition.x << ", " << playerPosition.y << ")";
-    window.setTitle(ss.str());
+    if (titleUpdateClock.getElapsedTime().asSeconds() >= titleUpdateInterval.asSeconds())
+    {
+        std::stringstream ss;
+        ss << "My window - FPS: " << static_cast<int>(fps) << " - Player Position: (" << static_cast<int>(playerPosition.x) << ", " << static_cast<int>(playerPosition.y) << ")";
+        window.setTitle(ss.str());
+        titleUpdateClock.restart();
+    }
 }
 
 void WindowManager::closeWindow()
