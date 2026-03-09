@@ -32,9 +32,13 @@ bool WindowManager::isActive()
 }
 void WindowManager::updateWindowTitle(float fps, sf::Vector2f playerPosition)
 {
-    std::stringstream ss;
-    ss << "My window - FPS: " << fps << " - Player Position: (" << playerPosition.x << ", " << playerPosition.y << ")";
-    window.setTitle(ss.str());
+    if (titleUpdateClock.getElapsedTime() >= titleUpdateInterval)
+    {
+        std::stringstream ss;
+        ss << "My window - FPS: " << fps << " - Player Position: (" << playerPosition.x << ", " << playerPosition.y << ")";
+        window.setTitle(ss.str());
+        titleUpdateClock.restart();
+    }
 }
 
 void WindowManager::closeWindow()

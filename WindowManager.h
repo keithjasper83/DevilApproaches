@@ -18,4 +18,8 @@ class WindowManager
     void updateWindowTitle(float fps, sf::Vector2f playerPosition);
     void closeWindow();
     void drawText(const std::string &content, float x, float y);
+
+  private:
+    sf::Clock titleUpdateClock;
+    const sf::Time titleUpdateInterval = sf::seconds(0.2f);
 };
