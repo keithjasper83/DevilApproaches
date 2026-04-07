@@ -8,7 +8,7 @@ else
     exit 1
 fi
 
-g++ -o test_map tests/test_map.cpp Level.cpp -I.
+g++ -o test_map tests/test_map.cpp Level.cpp Room.cpp -I.
 if [ $? -eq 0 ]; then
     ./test_map
     rm test_map

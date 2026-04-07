@@ -11,3 +11,9 @@
 - Implemented `Level::claimTile` to assign ownership.
 - Updated `Level::draw` to overlay faction-colored squares on claimed tiles.
 - Added tile claiming unit tests to `tests/test_map.cpp`.
+- Introduced `RoomType` enum and `Room` struct in `Room.h` and `Room.cpp`.
+- Extended `Level` class to support a `roomGrid` mapping.
+- Implemented `Level::buildRoom` enforcing that rooms can only be built on empty, player-claimed tiles.
+- Updated `Level::draw` to render rooms with specific colors layered over the grid.
+- Added room placement unit tests in `tests/test_map.cpp` and updated `run_tests.sh`.
+- Created `CONTENT_SCHEMA.md` to document data structures.

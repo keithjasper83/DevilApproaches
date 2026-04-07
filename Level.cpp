@@ -11,6 +11,7 @@ Level::Level(float width, float height) : size(width, height)
 
     grid.resize(gridWidth * gridHeight, TileType::Dirt);
     ownershipGrid.resize(gridWidth * gridHeight, Faction::Neutral);
+    roomGrid.resize(gridWidth * gridHeight, RoomType::None);
 }
 
 void Level::setTile(int x, int y, TileType type)
@@ -62,6 +63,27 @@ Faction Level::getTileFaction(int x, int y) const
     return Faction::Neutral; // Out of bounds is neutral
 }
 
+void Level::buildRoom(int x, int y, RoomType type)
+{
+    if (x >= 0 && x < gridWidth && y >= 0 && y < gridHeight)
+    {
+        // Enforce rule: Room can only be built on Empty tiles claimed by the Player
+        if (getTile(x, y) == TileType::Empty && getTileFaction(x, y) == Faction::Player)
+        {
+            roomGrid[y * gridWidth + x] = type;
+        }
+    }
+}
+
+RoomType Level::getRoom(int x, int y) const
+{
+    if (x >= 0 && x < gridWidth && y >= 0 && y < gridHeight)
+    {
+        return roomGrid[y * gridWidth + x];
+    }
+    return RoomType::None; // Out of bounds is None
+}
+
 void Level::draw(sf::RenderWindow &window)
 {
     window.draw(background);
@@ -71,6 +93,10 @@ void Level::draw(sf::RenderWindow &window)
     // Create an inner shape to represent ownership/faction claiming
     const float claimMargin = 4.0f;
     sf::RectangleShape claimShape(sf::Vector2f(tileSize - 2 * claimMargin, tileSize - 2 * claimMargin));
+
+    // Create an inner shape to represent rooms
+    const float roomMargin = 8.0f;
+    sf::RectangleShape roomShape(sf::Vector2f(tileSize - 2 * roomMargin, tileSize - 2 * roomMargin));
 
     // Drawing all tiles for now, as mock headers lack view getter methods
     int startX = 0;
@@ -117,6 +143,27 @@ void Level::draw(sf::RenderWindow &window)
 
                 claimShape.setPosition(x * tileSize + claimMargin, y * tileSize + claimMargin);
                 window.draw(claimShape);
+            }
+
+            // Draw room overlay
+            RoomType roomType = roomGrid[y * gridWidth + x];
+            if (roomType != RoomType::None)
+            {
+                if (roomType == RoomType::Production)
+                {
+                    roomShape.setFillColor(sf::Color(255, 215, 0)); // Gold/Yellow
+                }
+                else if (roomType == RoomType::Training)
+                {
+                    roomShape.setFillColor(sf::Color(178, 34, 34)); // Firebrick Red
+                }
+                else if (roomType == RoomType::Research)
+                {
+                    roomShape.setFillColor(sf::Color(75, 0, 130)); // Indigo/Purple
+                }
+
+                roomShape.setPosition(x * tileSize + roomMargin, y * tileSize + roomMargin);
+                window.draw(roomShape);
             }
         }
     }

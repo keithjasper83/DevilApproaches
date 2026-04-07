@@ -1,6 +1,7 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include <vector>
+#include "Room.h"
 
 enum class TileType
 {
@@ -32,6 +33,10 @@ class Level
     void claimTile(int x, int y, Faction faction);
     Faction getTileFaction(int x, int y) const;
 
+    // Room management
+    void buildRoom(int x, int y, RoomType type);
+    RoomType getRoom(int x, int y) const;
+
     const float tileSize = 40.0f; // Each tile is 40x40 pixels
 
   private:
@@ -42,4 +47,5 @@ class Level
     int gridHeight;
     std::vector<TileType> grid;
     std::vector<Faction> ownershipGrid;
+    std::vector<RoomType> roomGrid;
 };

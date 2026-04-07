@@ -68,6 +68,29 @@ int main() {
         return 1;
     }
 
-    std::cout << "Test Passed: Map, Digging, and Claiming Mechanics are correct." << std::endl;
+    // 11. Test building a room on an invalid tile (not empty)
+    // Tile (1, 0) is Dirt and claimed by Enemy1
+    level.buildRoom(1, 0, RoomType::Production);
+    if (level.getRoom(1, 0) != RoomType::None) {
+        std::cerr << "Test Failed: Room was built on a dirt tile!" << std::endl;
+        return 1;
+    }
+
+    // 12. Test building a room on a valid tile (Empty, claimed by Player)
+    // Tile (0, 0) is Empty and claimed by Player
+    level.buildRoom(0, 0, RoomType::Production);
+    if (level.getRoom(0, 0) != RoomType::Production) {
+        std::cerr << "Test Failed: Room was not built on a valid tile!" << std::endl;
+        return 1;
+    }
+
+    // 13. Test out-of-bounds room building
+    level.buildRoom(100, 100, RoomType::Training);
+    if (level.getRoom(100, 100) != RoomType::None) {
+        std::cerr << "Test Failed: Out of bounds tile somehow acquired a room!" << std::endl;
+        return 1;
+    }
+
+    std::cout << "Test Passed: Map, Digging, Claiming, and Room Mechanics are correct." << std::endl;
     return 0;
 }
