@@ -31,7 +31,7 @@ TileType Level::getTile(int x, int y) const
     return TileType::SolidRock; // Out of bounds is solid rock
 }
 
-void Level::dig(float worldX, float worldY)
+bool Level::dig(float worldX, float worldY)
 {
     int gridX = static_cast<int>(worldX / tileSize);
     int gridY = static_cast<int>(worldY / tileSize);
@@ -39,7 +39,9 @@ void Level::dig(float worldX, float worldY)
     if (getTile(gridX, gridY) == TileType::Dirt)
     {
         setTile(gridX, gridY, TileType::Empty);
+        return true;
     }
+    return false;
 }
 
 void Level::claimTile(int x, int y, Faction faction)

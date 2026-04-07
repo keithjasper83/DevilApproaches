@@ -30,3 +30,8 @@ void Player::setStartPosition()
 {
     setPosition(level.getSize().x / 2, level.getSize().y / 2);
 }
+
+Economy& Player::getEconomy()
+{
+    return economy;
+}

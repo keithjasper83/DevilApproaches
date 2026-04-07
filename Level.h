@@ -27,7 +27,7 @@ class Level
     // Tile management
     void setTile(int x, int y, TileType type);
     TileType getTile(int x, int y) const;
-    void dig(float worldX, float worldY); // Digs at world coordinates
+    bool dig(float worldX, float worldY); // Digs at world coordinates, returns true if successful
 
     // Ownership management
     void claimTile(int x, int y, Faction faction);

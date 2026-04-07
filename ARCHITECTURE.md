@@ -6,4 +6,5 @@
 - **ControlManager**: Static class handling keyboard and controller inputs.
 - **Level**: Grid-based tile map managing physical constraints (`TileType`: SolidRock, Dirt, Empty), territorial ownership (`Faction`: Neutral, Player, Enemy1), and room placement (`RoomType`). Includes interactions like digging, claiming territory, and building rooms. Dynamically renders tiles based on state, ownership, and room type.
 - **Room**: Defines the structural properties of built facilities (`Production`, `Training`, `Research`) including occupancy and capacity.
-- **Player**: A basic entity with position and movement logic.
+- **Economy**: Manages balances and storage capacities for the multi-resource system (`Ore`, `Essence`, `Influence`).
+- **Player**: Represents the physical or camera-based entity in the world; now holds a personal `Economy` instance.

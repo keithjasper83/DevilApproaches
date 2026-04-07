@@ -4,7 +4,7 @@
 - [x] Map and Tile System (Digging)
 - [x] Claiming/Ownership
 - [x] 3 Room Types
-- [ ] Multi-resource Economy
+- [x] Multi-resource Economy
 - [ ] 2 Unit Types with AI needs/jobs
 - [ ] Combat
 - [ ] 1 Enemy AI

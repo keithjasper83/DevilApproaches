@@ -102,6 +102,11 @@ void GameManager::run()
         // Digging Interaction Logic
         // Skipped mouse-to-world coordination to compile with mock headers
 
+        // Example integration: If digging is successful, add Ore resource to player economy.
+        // In the full game, digging might be automated by minions.
+        // bool dug = level.dig(mousePosWorld.x, mousePosWorld.y);
+        // if (dug) { player.getEconomy().addResource(ResourceType::Ore, 10); }
+
         // Render
         windowManager.window.setView(sf::View(viewport));
         level.draw(windowManager.window);

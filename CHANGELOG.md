@@ -17,3 +17,8 @@
 - Updated `Level::draw` to render rooms with specific colors layered over the grid.
 - Added room placement unit tests in `tests/test_map.cpp` and updated `run_tests.sh`.
 - Created `CONTENT_SCHEMA.md` to document data structures.
+- Introduced `Economy` class and `ResourceType` enum (`Ore`, `Essence`, `Influence`).
+- Added capacity and balance tracking to `Economy`.
+- Integrated `Economy` into the `Player` class.
+- Updated `Level::dig` to return a success boolean.
+- Added unit tests for economy mechanics in `tests/test_economy.cpp`.
