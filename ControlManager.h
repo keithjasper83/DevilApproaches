@@ -17,4 +17,5 @@ class ControlManager
     static bool shouldExitGame(unsigned int joystickId);                // New function for controller input
     static bool shouldResetGame(unsigned int joystickId);               // New function for controller input
     static void pollEvents(sf::RenderWindow &window);
+
 };

@@ -99,6 +99,9 @@ void GameManager::run()
             viewport.top = playerPosition.y - viewport.height / 2.f;
         }
 
+        // Digging Interaction Logic
+        // Skipped mouse-to-world coordination to compile with mock headers
+
         // Render
         windowManager.window.setView(sf::View(viewport));
         level.draw(windowManager.window);
