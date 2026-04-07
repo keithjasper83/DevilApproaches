@@ -21,5 +21,5 @@ class WindowManager
 
   private:
     sf::Clock titleUpdateClock;
-    const sf::Time titleUpdateInterval = sf::seconds(0.2f);
+    sf::Time titleUpdateInterval;
 };

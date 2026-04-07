@@ -71,7 +71,6 @@ sf::Vector2f ControlManager::getControllerMovement(unsigned int joystickId)
         if (std::abs(y) < deadzone)
             y = 0.f;
 
-        // std::cout << "Joystick ID: " << joystickId << ", X: " << x << ", Y: " << y << std::endl;
         //  Normalize the values to get movement direction
         return sf::Vector2f(x / 100.f, y / 100.f);
     }
