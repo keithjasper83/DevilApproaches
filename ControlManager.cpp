@@ -90,6 +90,7 @@ bool ControlManager::shouldExitGame(unsigned int joystickId)
     return false;
 }
 
+
 bool ControlManager::shouldResetGame(unsigned int joystickId)
 {
     // Check if the joystick is connected
