@@ -6,7 +6,7 @@
 - [x] 3 Room Types
 - [x] Multi-resource Economy
 - [x] 2 Unit Types with AI needs/jobs
-- [ ] Combat
+- [x] Combat
 - [ ] 1 Enemy AI
 - [ ] Save/Load
 - [ ] UI

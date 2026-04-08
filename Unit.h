@@ -37,6 +37,12 @@ public:
     int getMorale() const;
     void modifyMorale(int amount);
 
+    int getHp() const;
+    int getMaxHp() const;
+    void takeDamage(int amount);
+    bool isDead() const;
+    int getAttackDamage() const;
+
     void update(float deltaTime);
 
 private:
@@ -46,4 +52,8 @@ private:
     int faction; // Stored as int to break cyclic dependency with Level.h's Faction, handled via cast in manager
     JobType currentJob;
     int morale;
+
+    int hp;
+    int maxHp;
+    int attackDamage;
 };

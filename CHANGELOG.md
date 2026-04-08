@@ -27,3 +27,7 @@
 - Integrated `Unit` array into `Level` and added naive wandering logic in `updateUnits`.
 - Added unit rendering as distinct `sf::CircleShape` primitives.
 - Added unit tests to verify logic and clamping in `tests/test_unit.cpp`.
+- Added combat stats (`hp`, `maxHp`, `attackDamage`) to `Unit` class.
+- Implemented `takeDamage` and `isDead` methods.
+- Integrated a discrete proximity-based combat simulation in `Level::updateUnits`.
+- Added `tests/test_combat.cpp` to verify combat models and boundary conditions.

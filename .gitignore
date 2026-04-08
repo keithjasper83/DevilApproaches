@@ -365,3 +365,4 @@ test_map
 test_player
 test_economy
 test_unit
+test_combat

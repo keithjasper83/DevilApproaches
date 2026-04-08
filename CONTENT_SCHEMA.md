@@ -41,6 +41,9 @@ struct Unit {
     int faction;
     JobType currentJob;
     int morale;
+    int hp;
+    int maxHp;
+    int attackDamage;
 };
 ```
 

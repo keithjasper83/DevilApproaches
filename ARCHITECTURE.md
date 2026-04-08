@@ -8,4 +8,4 @@
 - **Room**: Defines the structural properties of built facilities (`Production`, `Training`, `Research`) including occupancy and capacity.
 - **Economy**: Manages balances and storage capacities for the multi-resource system (`Ore`, `Essence`, `Influence`).
 - **Player**: Represents the physical or camera-based entity in the world; now holds a personal `Economy` instance.
-- **Unit**: Autonomous agents with needs (`morale`), jobs (`JobType`), and faction alignments. They are managed and updated by the `Level`.
+- **Unit**: Autonomous agents with needs (`morale`), jobs (`JobType`), combat stats (`hp`, `attackDamage`), and faction alignments. They are managed, updated, and engage in simulated proximity combat via the `Level`.

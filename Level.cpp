@@ -35,8 +35,8 @@ TileType Level::getTile(int x, int y) const
 
 bool Level::dig(float worldX, float worldY)
 {
-    int gridX = static_cast<int>(worldX / tileSize);
-    int gridY = static_cast<int>(worldY / tileSize);
+    int gridX = static_cast<int>(std::floor(worldX / tileSize));
+    int gridY = static_cast<int>(std::floor(worldY / tileSize));
 
     if (getTile(gridX, gridY) == TileType::Dirt)
     {
@@ -114,6 +114,41 @@ void Level::updateUnits(float deltaTime)
             unit.setPosition(newX, newY);
         }
     }
+
+    // Very naive proximity combat logic O(N^2) for prototyping
+    float combatRange = 30.0f; // Distance threshold for melee combat
+    for (size_t i = 0; i < units.size(); ++i)
+    {
+        if (units[i].isDead()) continue;
+
+        for (size_t j = i + 1; j < units.size(); ++j)
+        {
+            if (units[j].isDead()) continue;
+
+            // Check if they are from different factions
+            if (units[i].getFaction() != units[j].getFaction())
+            {
+                sf::Vector2f pos1 = units[i].getPosition();
+                sf::Vector2f pos2 = units[j].getPosition();
+                float distSq = (pos1.x - pos2.x) * (pos1.x - pos2.x) + (pos1.y - pos2.y) * (pos1.y - pos2.y);
+
+                if (distSq <= combatRange * combatRange)
+                {
+                    // They fight! (simplified simultaneous damage)
+                    // In a real tick, damage would be scaled by deltaTime or cooldowns.
+                    // For this basic slice, we apply discrete damage.
+                    units[i].takeDamage(units[j].getAttackDamage());
+                    units[j].takeDamage(units[i].getAttackDamage());
+                }
+            }
+        }
+    }
+
+    // Clean up dead units
+    units.erase(
+        std::remove_if(units.begin(), units.end(), [](const Unit& u) { return u.isDead(); }),
+        units.end()
+    );
 }
 
 void Level::draw(sf::RenderWindow &window)

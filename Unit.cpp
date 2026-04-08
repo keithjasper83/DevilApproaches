@@ -4,6 +4,14 @@
 Unit::Unit(int id, UnitType type, float x, float y, int faction)
     : id(id), type(type), position(x, y), faction(faction), currentJob(JobType::Idle), morale(100)
 {
+    if (type == UnitType::Fighter) {
+        maxHp = 100;
+        attackDamage = 20;
+    } else {
+        maxHp = 50;
+        attackDamage = 5;
+    }
+    hp = maxHp;
 }
 
 int Unit::getId() const
@@ -52,6 +60,34 @@ void Unit::modifyMorale(int amount)
     morale += amount;
     // Clamp morale between 0 and 100
     morale = std::max(0, std::min(100, morale));
+}
+
+int Unit::getHp() const
+{
+    return hp;
+}
+
+int Unit::getMaxHp() const
+{
+    return maxHp;
+}
+
+void Unit::takeDamage(int amount)
+{
+    if (amount > 0) {
+        hp -= amount;
+        hp = std::max(0, hp);
+    }
+}
+
+bool Unit::isDead() const
+{
+    return hp <= 0;
+}
+
+int Unit::getAttackDamage() const
+{
+    return attackDamage;
 }
 
 void Unit::update(float deltaTime)
