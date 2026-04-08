@@ -44,12 +44,31 @@ struct Unit {
     int hp;
     int maxHp;
     int attackDamage;
+    float attackRange;
+    float attackCooldown;
+    float currentCooldown;
 };
 ```
 
 ### Supported `UnitType` Values
 - `Worker`: Weak in combat. Primary duty is digging, hauling, and building.
 - `Fighter`: Standard combat unit. Defends the dungeon and raids enemies.
+- `Ranger`: Ranged combat unit. Shoots projectiles from a distance.
+
+## Projectiles
+Spawns from ranged attacks and traverses space to hit a specific faction.
+
+### `Projectile` Structure
+```cpp
+struct Projectile {
+    int id;
+    sf::Vector2f position;
+    sf::Vector2f velocity;
+    int damage;
+    int targetFaction;
+    float lifetime;
+};
+```
 
 ### Supported `JobType` Values
 - `Idle`: No active job. Wanders and recovers needs.

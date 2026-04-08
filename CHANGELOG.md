@@ -31,3 +31,8 @@
 - Implemented `takeDamage` and `isDead` methods.
 - Integrated a discrete proximity-based combat simulation in `Level::updateUnits`.
 - Added `tests/test_combat.cpp` to verify combat models and boundary conditions.
+- Refactored O(N^2) combat loop to a scalable spatial partitioning grid mapping units to tile indices.
+- Introduced `UnitType::Ranger`, `attackRange`, and `attackCooldown` logic to `Unit` class.
+- Created `Projectile` struct and implemented `Level::updateProjectiles` with collision logic mapped against the spatial grid.
+- Added rendering for `Projectile` in `Level::draw`.
+- Addressed documented risks and updated tests/docs to reflect performance and ranged combat upgrades.

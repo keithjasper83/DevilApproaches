@@ -3,6 +3,7 @@
 #include <vector>
 #include "Room.h"
 #include "Unit.h"
+#include "Projectile.h"
 
 enum class TileType
 {
@@ -41,8 +42,12 @@ class Level
     // Unit management
     void addUnit(Unit unit);
     void updateUnits(float deltaTime);
+    void updateProjectiles(float deltaTime, const std::vector<std::vector<size_t>>& spatialGrid);
 
     const float tileSize = 40.0f; // Each tile is 40x40 pixels
+
+    // Helper to get grid cell for spatial partitioning
+    int getGridIndex(float x, float y) const;
 
   private:
     sf::RectangleShape background;
@@ -54,4 +59,9 @@ class Level
     std::vector<Faction> ownershipGrid;
     std::vector<RoomType> roomGrid;
     std::vector<Unit> units;
+    std::vector<Projectile> projectiles;
+    int projectileIdCounter = 0;
+
+    // Transient spatial grid reused each frame to avoid reallocation overhead
+    std::vector<std::vector<size_t>> spatialGrid;
 };

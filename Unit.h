@@ -8,7 +8,8 @@ enum class Faction;
 enum class UnitType
 {
     Worker,
-    Fighter
+    Fighter,
+    Ranger
 };
 
 enum class JobType
@@ -43,6 +44,12 @@ public:
     bool isDead() const;
     int getAttackDamage() const;
 
+    float getAttackRange() const;
+    float getAttackCooldown() const;
+    float getCurrentCooldown() const;
+    void resetCooldown();
+    bool canAttack() const;
+
     void update(float deltaTime);
 
 private:
@@ -56,4 +63,7 @@ private:
     int hp;
     int maxHp;
     int attackDamage;
+    float attackRange;
+    float attackCooldown;
+    float currentCooldown;
 };

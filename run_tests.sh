@@ -35,7 +35,7 @@ else
     exit 1
 fi
 
-g++ -o test_combat tests/test_combat.cpp Unit.cpp Level.cpp Room.cpp -I.
+g++ -o test_combat tests/test_combat.cpp Unit.cpp Level.cpp Room.cpp Projectile.cpp -I.
 if [ $? -eq 0 ]; then
     ./test_combat || exit 1
     rm test_combat

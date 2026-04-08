@@ -14,6 +14,7 @@ Level::Level(float width, float height) : size(width, height)
     grid.resize(gridWidth * gridHeight, TileType::Dirt);
     ownershipGrid.resize(gridWidth * gridHeight, Faction::Neutral);
     roomGrid.resize(gridWidth * gridHeight, RoomType::None);
+    spatialGrid.resize(gridWidth * gridHeight);
 }
 
 void Level::setTile(int x, int y, TileType type)
@@ -93,8 +94,19 @@ void Level::addUnit(Unit unit)
     units.push_back(unit);
 }
 
+int Level::getGridIndex(float x, float y) const
+{
+    int gridX = static_cast<int>(std::floor(x / tileSize));
+    int gridY = static_cast<int>(std::floor(y / tileSize));
+    if (gridX >= 0 && gridX < gridWidth && gridY >= 0 && gridY < gridHeight) {
+        return gridY * gridWidth + gridX;
+    }
+    return -1; // Out of bounds
+}
+
 void Level::updateUnits(float deltaTime)
 {
+    // Update individual unit state and movement
     for (auto& unit : units)
     {
         unit.update(deltaTime);
@@ -115,39 +127,143 @@ void Level::updateUnits(float deltaTime)
         }
     }
 
-    // Very naive proximity combat logic O(N^2) for prototyping
-    float combatRange = 30.0f; // Distance threshold for melee combat
+    // Spatial Partitioning for combat
+    // Clear the reused spatial grid
+    for (auto& cell : spatialGrid) {
+        cell.clear();
+    }
+
+    // Populate spatial grid
     for (size_t i = 0; i < units.size(); ++i)
     {
         if (units[i].isDead()) continue;
 
-        for (size_t j = i + 1; j < units.size(); ++j)
+        sf::Vector2f pos = units[i].getPosition();
+        int index = getGridIndex(pos.x, pos.y);
+        if (index != -1) {
+            spatialGrid[index].push_back(i);
+        }
+    }
+
+    // Check for collisions using the spatial grid
+    for (size_t i = 0; i < units.size(); ++i)
+    {
+        if (units[i].isDead()) continue;
+
+        sf::Vector2f pos = units[i].getPosition();
+        int gridX = static_cast<int>(std::floor(pos.x / tileSize));
+        int gridY = static_cast<int>(std::floor(pos.y / tileSize));
+
+        float attackRange = units[i].getAttackRange();
+        int searchRadius = static_cast<int>(std::ceil(attackRange / tileSize));
+
+        // Check the unit's cell and surrounding cells within attackRange
+        for (int dy = -searchRadius; dy <= searchRadius; ++dy)
         {
-            if (units[j].isDead()) continue;
-
-            // Check if they are from different factions
-            if (units[i].getFaction() != units[j].getFaction())
+            for (int dx = -searchRadius; dx <= searchRadius; ++dx)
             {
-                sf::Vector2f pos1 = units[i].getPosition();
-                sf::Vector2f pos2 = units[j].getPosition();
-                float distSq = (pos1.x - pos2.x) * (pos1.x - pos2.x) + (pos1.y - pos2.y) * (pos1.y - pos2.y);
+                int checkX = gridX + dx;
+                int checkY = gridY + dy;
 
-                if (distSq <= combatRange * combatRange)
+                if (checkX >= 0 && checkX < gridWidth && checkY >= 0 && checkY < gridHeight)
                 {
-                    // They fight! (simplified simultaneous damage)
-                    // In a real tick, damage would be scaled by deltaTime or cooldowns.
-                    // For this basic slice, we apply discrete damage.
-                    units[i].takeDamage(units[j].getAttackDamage());
-                    units[j].takeDamage(units[i].getAttackDamage());
+                    int cellIndex = checkY * gridWidth + checkX;
+                    for (size_t j : spatialGrid[cellIndex])
+                    {
+                        if (i == j) continue; // Don't check against self
+                        if (units[j].isDead()) continue;
+
+                        // Check if they are from different factions
+                        if (units[i].getFaction() != units[j].getFaction())
+                        {
+                            sf::Vector2f pos1 = units[i].getPosition();
+                            sf::Vector2f pos2 = units[j].getPosition();
+                            float distSq = (pos1.x - pos2.x) * (pos1.x - pos2.x) + (pos1.y - pos2.y) * (pos1.y - pos2.y);
+
+                            if (distSq <= attackRange * attackRange)
+                            {
+                                if (units[i].canAttack())
+                                {
+                                    if (units[i].getType() == UnitType::Ranger)
+                                    {
+                                        // Spawn projectile
+                                        sf::Vector2f dir(pos2.x - pos1.x, pos2.y - pos1.y);
+                                        projectiles.emplace_back(projectileIdCounter++, pos1, dir, 200.0f, units[i].getAttackDamage(), units[j].getFaction());
+                                    }
+                                    else
+                                    {
+                                        // Melee attack
+                                        units[j].takeDamage(units[i].getAttackDamage());
+                                    }
+                                    units[i].resetCooldown();
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
     }
 
+    updateProjectiles(deltaTime, spatialGrid);
+
     // Clean up dead units
     units.erase(
         std::remove_if(units.begin(), units.end(), [](const Unit& u) { return u.isDead(); }),
         units.end()
+    );
+}
+
+void Level::updateProjectiles(float deltaTime, const std::vector<std::vector<size_t>>& spatialGrid)
+{
+    for (auto& proj : projectiles)
+    {
+        proj.update(deltaTime);
+
+        // Simple collision check against the spatial grid
+        sf::Vector2f projPos = proj.position;
+        int gridX = static_cast<int>(std::floor(projPos.x / tileSize));
+        int gridY = static_cast<int>(std::floor(projPos.y / tileSize));
+
+        float hitRadiusSq = 15.0f * 15.0f; // Roughly the size of a unit + projectile
+        bool hit = false;
+
+        // Check 3x3 area
+        for (int dy = -1; dy <= 1 && !hit; ++dy)
+        {
+            for (int dx = -1; dx <= 1 && !hit; ++dx)
+            {
+                int checkX = gridX + dx;
+                int checkY = gridY + dy;
+
+                if (checkX >= 0 && checkX < gridWidth && checkY >= 0 && checkY < gridHeight)
+                {
+                    int cellIndex = checkY * gridWidth + checkX;
+                    for (size_t uIdx : spatialGrid[cellIndex])
+                    {
+                        Unit& target = units[uIdx];
+                        if (target.isDead() || target.getFaction() != proj.targetFaction) continue;
+
+                        sf::Vector2f uPos = target.getPosition();
+                        float distSq = (projPos.x - uPos.x) * (projPos.x - uPos.x) + (projPos.y - uPos.y) * (projPos.y - uPos.y);
+
+                        if (distSq <= hitRadiusSq)
+                        {
+                            target.takeDamage(proj.damage);
+                            proj.lifetime = 0.0f; // Destroy projectile
+                            hit = true;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    // Clean up dead projectiles
+    projectiles.erase(
+        std::remove_if(projectiles.begin(), projectiles.end(), [](const Projectile& p) { return p.isDead(); }),
+        projectiles.end()
     );
 }
 
@@ -264,6 +380,16 @@ void Level::draw(sf::RenderWindow &window)
         }
 
         window.draw(unitShape);
+    }
+
+    // Draw Projectiles
+    sf::CircleShape projShape(4.0f);
+    projShape.setFillColor(sf::Color(255, 255, 0)); // Yellow
+    projShape.setOrigin(4.0f, 4.0f);
+    for (const auto& proj : projectiles)
+    {
+        projShape.setPosition(proj.position);
+        window.draw(projShape);
     }
 }
 
