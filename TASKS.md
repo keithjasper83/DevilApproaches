@@ -5,7 +5,7 @@
 - [x] Claiming/Ownership
 - [x] 3 Room Types
 - [x] Multi-resource Economy
-- [ ] 2 Unit Types with AI needs/jobs
+- [x] 2 Unit Types with AI needs/jobs
 - [ ] Combat
 - [ ] 1 Enemy AI
 - [ ] Save/Load

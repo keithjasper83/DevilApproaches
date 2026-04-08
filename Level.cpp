@@ -1,5 +1,7 @@
 #include "Level.h"
 #include <cmath>
+#include <algorithm>
+#include <cstdlib>
 
 Level::Level(float width, float height) : size(width, height)
 {
@@ -86,6 +88,34 @@ RoomType Level::getRoom(int x, int y) const
     return RoomType::None; // Out of bounds is None
 }
 
+void Level::addUnit(Unit unit)
+{
+    units.push_back(unit);
+}
+
+void Level::updateUnits(float deltaTime)
+{
+    for (auto& unit : units)
+    {
+        unit.update(deltaTime);
+
+        // Extremely basic placeholder logic: if idle, assign random movement
+        if (unit.getCurrentJob() == JobType::Idle)
+        {
+            sf::Vector2f pos = unit.getPosition();
+
+            // Random walk (very naive placeholder)
+            float moveX = ((rand() % 3) - 1) * 10.0f * deltaTime;
+            float moveY = ((rand() % 3) - 1) * 10.0f * deltaTime;
+
+            float newX = std::max(0.0f, std::min(pos.x + moveX, size.x));
+            float newY = std::max(0.0f, std::min(pos.y + moveY, size.y));
+
+            unit.setPosition(newX, newY);
+        }
+    }
+}
+
 void Level::draw(sf::RenderWindow &window)
 {
     window.draw(background);
@@ -168,6 +198,37 @@ void Level::draw(sf::RenderWindow &window)
                 window.draw(roomShape);
             }
         }
+    }
+
+    // Draw Units
+    sf::CircleShape unitShape(10.0f);
+    unitShape.setOrigin(10.0f, 10.0f); // Center origin for easy positioning
+    for (const auto& unit : units)
+    {
+        unitShape.setPosition(unit.getPosition());
+
+        if (unit.getType() == UnitType::Worker)
+        {
+            unitShape.setFillColor(sf::Color(139, 69, 19)); // Brown
+        }
+        else if (unit.getType() == UnitType::Fighter)
+        {
+            unitShape.setFillColor(sf::Color(178, 34, 34)); // Dark Red
+        }
+
+        // Faction indicator could be a border color, keeping it simple for now
+        if (unit.getFaction() == static_cast<int>(Faction::Player))
+        {
+            unitShape.setOutlineColor(sf::Color(0, 0, 255)); // Blue
+            unitShape.setOutlineThickness(2.0f);
+        }
+        else
+        {
+            unitShape.setOutlineColor(sf::Color(255, 0, 0)); // Red
+            unitShape.setOutlineThickness(2.0f);
+        }
+
+        window.draw(unitShape);
     }
 }
 

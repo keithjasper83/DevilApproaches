@@ -1,16 +1,16 @@
 #!/bin/bash
-g++ -o test_player tests/test_player.cpp Player.cpp Level.cpp Economy.cpp -I.
+g++ -o test_player tests/test_player.cpp Player.cpp Level.cpp Economy.cpp Unit.cpp -I.
 if [ $? -eq 0 ]; then
-    ./test_player
+    ./test_player || exit 1
     rm test_player
 else
     echo "test_player compilation failed"
     exit 1
 fi
 
-g++ -o test_map tests/test_map.cpp Level.cpp Room.cpp -I.
+g++ -o test_map tests/test_map.cpp Level.cpp Room.cpp Unit.cpp -I.
 if [ $? -eq 0 ]; then
-    ./test_map
+    ./test_map || exit 1
     rm test_map
 else
     echo "test_map compilation failed"
@@ -19,9 +19,18 @@ fi
 
 g++ -o test_economy tests/test_economy.cpp Economy.cpp -I.
 if [ $? -eq 0 ]; then
-    ./test_economy
+    ./test_economy || exit 1
     rm test_economy
 else
     echo "test_economy compilation failed"
+    exit 1
+fi
+
+g++ -o test_unit tests/test_unit.cpp Unit.cpp -I.
+if [ $? -eq 0 ]; then
+    ./test_unit || exit 1
+    rm test_unit
+else
+    echo "test_unit compilation failed"
     exit 1
 fi

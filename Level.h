@@ -2,6 +2,7 @@
 #include <SFML/Graphics.hpp>
 #include <vector>
 #include "Room.h"
+#include "Unit.h"
 
 enum class TileType
 {
@@ -37,6 +38,10 @@ class Level
     void buildRoom(int x, int y, RoomType type);
     RoomType getRoom(int x, int y) const;
 
+    // Unit management
+    void addUnit(Unit unit);
+    void updateUnits(float deltaTime);
+
     const float tileSize = 40.0f; // Each tile is 40x40 pixels
 
   private:
@@ -48,4 +53,5 @@ class Level
     std::vector<TileType> grid;
     std::vector<Faction> ownershipGrid;
     std::vector<RoomType> roomGrid;
+    std::vector<Unit> units;
 };

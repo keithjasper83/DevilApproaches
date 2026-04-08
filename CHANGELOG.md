@@ -22,3 +22,8 @@
 - Integrated `Economy` into the `Player` class.
 - Updated `Level::dig` to return a success boolean.
 - Added unit tests for economy mechanics in `tests/test_economy.cpp`.
+- Introduced `UnitType`, `JobType` enums and `Unit` class.
+- Added basic state tracking (Morale, Jobs) for `Unit`.
+- Integrated `Unit` array into `Level` and added naive wandering logic in `updateUnits`.
+- Added unit rendering as distinct `sf::CircleShape` primitives.
+- Added unit tests to verify logic and clamping in `tests/test_unit.cpp`.
