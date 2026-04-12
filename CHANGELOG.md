@@ -36,3 +36,6 @@
 - Created `Projectile` struct and implemented `Level::updateProjectiles` with collision logic mapped against the spatial grid.
 - Added rendering for `Projectile` in `Level::draw`.
 - Addressed documented risks and updated tests/docs to reflect performance and ranged combat upgrades.
+- Added `AIPlayer` class to handle basic opponent logic (expanding territory, building rooms).
+- Instantiated `AIPlayer` in the main game loop inside `GameManager`.
+- Added AI mechanics tests to `tests/test_ai.cpp`.

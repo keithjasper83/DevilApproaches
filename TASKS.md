@@ -7,7 +7,7 @@
 - [x] Multi-resource Economy
 - [x] 2 Unit Types with AI needs/jobs
 - [x] Combat
-- [ ] 1 Enemy AI
+- [x] 1 Enemy AI
 - [ ] Save/Load
 - [ ] UI
 - [ ] Docs/Tests Update

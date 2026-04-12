@@ -2,6 +2,7 @@
 #include "ControlManager.h"
 #include "Level.h"
 #include "Player.h"
+#include "AIPlayer.h"
 #include <SFML/System.hpp> // Include SFML's system header for sleep function
 #include <cmath>
 
@@ -22,6 +23,7 @@ void GameManager::run()
     Level level(4000, 4000);
     Player player(level);
     player.setStartPosition();
+    AIPlayer aiOpponent(level, Faction::Enemy1);
 
     // Define viewport size and position
     sf::FloatRect viewport(0.f, 0.f, windowManager.window.getSize().x, windowManager.window.getSize().y);
@@ -133,6 +135,12 @@ void GameManager::run()
                                windowManager.window.getSize().x - 500, 40);
 
         windowManager.window.display();
+
+        // AI Update
+        aiOpponent.update(frameTimes[frameIndex]); // Basic delta time hook
+
+        // Level / Unit Update
+        level.updateUnits(frameTimes[frameIndex]);
 
         // Update the circular buffer with the current frame time
         sf::Time frameTime = clock.restart();

@@ -43,3 +43,12 @@ else
     echo "test_combat compilation failed"
     exit 1
 fi
+
+g++ -o test_ai tests/test_ai.cpp AIPlayer.cpp Level.cpp Room.cpp Economy.cpp Unit.cpp Projectile.cpp -I.
+if [ $? -eq 0 ]; then
+    ./test_ai || exit 1
+    rm test_ai
+else
+    echo "test_ai compilation failed"
+    exit 1
+fi
