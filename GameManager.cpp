@@ -31,6 +31,7 @@ void GameManager::run()
     std::vector<float> frameTimes(numSamples, 0.0f);
     int frameIndex = 0; // Index to keep track of the current frame time
     sf::Clock clock;    // Declare sf::Clock object
+    float sumFrameTimes = 0.0f; // Running sum of frame times
 
     while (windowManager.isActive())
     {
@@ -108,12 +109,11 @@ void GameManager::run()
         player.draw(windowManager.window);
 
         // Calculate the average FPS
-        float sumFrameTimes = 0.0f;
-        for (int i = 0; i < numSamples; ++i)
+        float averageFPS = 0.0f;
+        if (sumFrameTimes > 0.0f)
         {
-            sumFrameTimes += frameTimes[i];
+            averageFPS = numSamples / sumFrameTimes;
         }
-        float averageFPS = numSamples / sumFrameTimes;
 
         windowManager.updateWindowTitle(averageFPS, player.getPosition());
         windowManager.window.setView(windowManager.window.getDefaultView());
@@ -131,7 +131,10 @@ void GameManager::run()
 
         // Update the circular buffer with the current frame time
         sf::Time frameTime = clock.restart();
-        frameTimes[frameIndex] = frameTime.asSeconds();
+        float newFrameTime = frameTime.asSeconds();
+
+        sumFrameTimes = sumFrameTimes - frameTimes[frameIndex] + newFrameTime;
+        frameTimes[frameIndex] = newFrameTime;
         frameIndex = (frameIndex + 1) % numSamples;
     }
 }
