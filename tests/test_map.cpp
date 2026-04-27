@@ -34,9 +34,31 @@ int main() {
         return 1;
     }
 
-    // 6. Test out-of-bounds safety
+    // 6. Test out-of-bounds safety for getTile
     if (level.getTile(100, 100) != TileType::SolidRock) {
         std::cerr << "Test Failed: Out of bounds tile did not return SolidRock!" << std::endl;
+        return 1;
+    }
+
+    if (level.getTile(-1, -1) != TileType::SolidRock) {
+        std::cerr << "Test Failed: Negative out of bounds tile did not return SolidRock!" << std::endl;
+        return 1;
+    }
+
+    // 7. Test out-of-bounds safety for setTile (should not crash or corrupt state)
+    // Try setting out-of-bounds tiles
+    level.setTile(-1, -1, TileType::Empty);
+    level.setTile(100, 100, TileType::Empty);
+    level.setTile(-5, 5, TileType::Empty);
+    level.setTile(5, -5, TileType::Empty);
+
+    // Verify it didn't change what's inside bounds (assuming those didn't overwrite memory)
+    if (level.getTile(0, 0) != TileType::Empty) { // Changed in step 4
+        std::cerr << "Test Failed: In-bounds tile corrupted by out-of-bounds setTile!" << std::endl;
+        return 1;
+    }
+    if (level.getTile(1, 0) != TileType::Dirt) { // Unchanged
+        std::cerr << "Test Failed: In-bounds tile corrupted by out-of-bounds setTile!" << std::endl;
         return 1;
     }
 
