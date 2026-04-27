@@ -1,6 +1,7 @@
 # Changelog
 
 ## [Unreleased]
+- Implemented View Frustum Culling in `Level.cpp` to optimize tile drawing by only rendering tiles within the visible camera bounds.
 - Initial creation of repository audit.
 - Refactored `Level` to a grid-based tile map system.
 - Introduced `TileType` enum (`SolidRock`, `Dirt`, `Empty`).
