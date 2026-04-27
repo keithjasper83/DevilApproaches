@@ -44,6 +44,16 @@ bool ControlManager::shifting()
 {
     return sf::Keyboard::isKeyPressed(sf::Keyboard::LShift);
 }
+
+bool ControlManager::shifting(unsigned int joystickId)
+{
+    if (sf::Joystick::isConnected(joystickId))
+    {
+        return sf::Joystick::isButtonPressed(joystickId, ControllerButton::ButtonSlow);
+    }
+    return false;
+}
+
 bool ControlManager::shouldExitGame()
 {
     return sf::Keyboard::isKeyPressed(sf::Keyboard::Escape);
@@ -55,13 +65,10 @@ bool ControlManager::shouldResetGame()
 
 sf::Vector2f ControlManager::getControllerMovement(unsigned int joystickId)
 {
-    // TODO: IMPLEMENT SLOW MOVEMENT
     //  Check if the joystick is connected
     if (sf::Joystick::isConnected(joystickId))
     {
         // Get the position of the left joystick
-
-        // TODO: implement custom definitions for the buttons FOR BETTER MAPPING
         float x = sf::Joystick::getAxisPosition(joystickId, sf::Joystick::X);
         float y = sf::Joystick::getAxisPosition(joystickId, sf::Joystick::Y);
         // Apply deadzone to avoid slight drift
@@ -71,8 +78,14 @@ sf::Vector2f ControlManager::getControllerMovement(unsigned int joystickId)
         if (std::abs(y) < deadzone)
             y = 0.f;
 
-        //  Normalize the values to get movement direction
-        return sf::Vector2f(x / 100.f, y / 100.f);
+        float speed = 1.0f;
+        if (shifting(joystickId))
+        {
+            speed = 0.5f;
+        }
+
+        //  Normalize the values to get movement direction and apply speed
+        return sf::Vector2f((x / 100.f) * speed, (y / 100.f) * speed);
     }
     // Return zero movement if the joystick is not connected
     return sf::Vector2f(0.f, 0.f);
@@ -83,8 +96,8 @@ bool ControlManager::shouldExitGame(unsigned int joystickId)
     // Check if the joystick is connected
     if (sf::Joystick::isConnected(joystickId))
     {
-        // Check if the button 8 is pressed (Start Key on xbox controller)
-        return sf::Joystick::isButtonPressed(joystickId, 7);
+        // Check if the exit button is pressed
+        return sf::Joystick::isButtonPressed(joystickId, ControllerButton::ButtonExit);
     }
     // Return false if the joystick is not connected
     return false;
@@ -96,8 +109,8 @@ bool ControlManager::shouldResetGame(unsigned int joystickId)
     // Check if the joystick is connected
     if (sf::Joystick::isConnected(joystickId))
     {
-        // Check if the button 7 is pressed (Select Key on xbox controller)
-        return sf::Joystick::isButtonPressed(joystickId, 6);
+        // Check if the reset button is pressed
+        return sf::Joystick::isButtonPressed(joystickId, ControllerButton::ButtonReset);
     }
     // Return false if the joystick is not connected
     return false;
