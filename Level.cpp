@@ -1,5 +1,6 @@
 #include "Level.h"
 #include <cmath>
+#include <algorithm>
 
 Level::Level(float width, float height) : size(width, height)
 {
@@ -46,11 +47,14 @@ void Level::draw(sf::RenderWindow &window)
 
     sf::RectangleShape tileShape(sf::Vector2f(tileSize, tileSize));
 
-    // Drawing all tiles for now, as mock headers lack view getter methods
-    int startX = 0;
-    int startY = 0;
-    int endX = gridWidth;
-    int endY = gridHeight;
+    sf::View view = window.getView();
+    sf::Vector2f center = view.getCenter();
+    sf::Vector2f size = view.getSize();
+
+    int startX = std::max(0, static_cast<int>((center.x - size.x / 2) / tileSize));
+    int startY = std::max(0, static_cast<int>((center.y - size.y / 2) / tileSize));
+    int endX = std::min(gridWidth, static_cast<int>((center.x + size.x / 2) / tileSize) + 1);
+    int endY = std::min(gridHeight, static_cast<int>((center.y + size.y / 2) / tileSize) + 1);
 
     for (int y = startY; y < endY; ++y)
     {
