@@ -22,22 +22,10 @@ void ControlManager::isJoystickConnected()
 
 sf::Vector2f ControlManager::getPlayerMovement()
 {
-    // todo: CLEAN CODE
-    sf::Vector2f movement(0.f, 0.f);
-    float speed = 1.f;
-    if (shifting())
-    {
-        speed = 0.5f;
-    }
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
-        movement.y -= speed;
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
-        movement.y += speed;
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
-        movement.x -= speed;
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
-        movement.x += speed;
-    return movement;
+    float speed = shifting() ? 0.5f : 1.f;
+    float x = sf::Keyboard::isKeyPressed(sf::Keyboard::D) - sf::Keyboard::isKeyPressed(sf::Keyboard::A);
+    float y = sf::Keyboard::isKeyPressed(sf::Keyboard::S) - sf::Keyboard::isKeyPressed(sf::Keyboard::W);
+    return sf::Vector2f(x * speed, y * speed);
 }
 
 bool ControlManager::shifting()
