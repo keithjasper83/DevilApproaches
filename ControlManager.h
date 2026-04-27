@@ -8,9 +8,17 @@
 class ControlManager
 {
   public:
+    enum ControllerButton
+    {
+        ButtonSlow = 4,
+        ButtonReset = 6,
+        ButtonExit = 7
+    };
+
     static void isJoystickConnected();
     static sf::Vector2f getPlayerMovement();
     static bool shifting();
+    static bool shifting(unsigned int joystickId);
     static bool shouldExitGame();
     static bool shouldResetGame();
     static sf::Vector2f getControllerMovement(unsigned int joystickId); // New function for controller input
