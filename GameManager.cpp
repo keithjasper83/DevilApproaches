@@ -32,6 +32,14 @@ void GameManager::run()
     int frameIndex = 0; // Index to keep track of the current frame time
     sf::Clock clock;    // Declare sf::Clock object
 
+    // Cached strings for UI to avoid allocation overhead
+    int lastPlayerX = -2147483648; // Using minimum int value to ensure initialization
+    int lastPlayerY = -2147483648;
+    std::string playerPosStr = "";
+
+    int lastFPS = -2147483648;
+    std::string fpsStr = "";
+
     while (windowManager.isActive())
     {
         windowManager.window.clear();
@@ -119,13 +127,28 @@ void GameManager::run()
         windowManager.window.setView(windowManager.window.getDefaultView());
 
         // Draw player position
-        windowManager.drawText("Player Position: (" + std::to_string(static_cast<int>(std::round(playerPosition.x))) +
-                                   ", " + std::to_string(static_cast<int>(std::round(playerPosition.y))) + ")",
-                               windowManager.window.getSize().x - 500, 10);
+        int currentX = static_cast<int>(std::round(playerPosition.x));
+        int currentY = static_cast<int>(std::round(playerPosition.y));
+        if (currentX != lastPlayerX || currentY != lastPlayerY)
+        {
+            char buffer[64];
+            snprintf(buffer, sizeof(buffer), "Player Position: (%d, %d)", currentX, currentY);
+            playerPosStr = buffer;
+            lastPlayerX = currentX;
+            lastPlayerY = currentY;
+        }
+        windowManager.drawText(playerPosStr, windowManager.window.getSize().x - 500, 10);
 
         // Draw FPS
-        windowManager.drawText("FPS: " + std::to_string(static_cast<int>(averageFPS)),
-                               windowManager.window.getSize().x - 500, 40);
+        int currentFPS = static_cast<int>(averageFPS);
+        if (currentFPS != lastFPS)
+        {
+            char buffer[64];
+            snprintf(buffer, sizeof(buffer), "FPS: %d", currentFPS);
+            fpsStr = buffer;
+            lastFPS = currentFPS;
+        }
+        windowManager.drawText(fpsStr, windowManager.window.getSize().x - 500, 40);
 
         windowManager.window.display();
 
